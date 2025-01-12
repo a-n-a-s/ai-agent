@@ -4,8 +4,6 @@ import { validationResult } from "express-validator";
 
 import redisClient from "../services/redis.service.js";
 
-
-
 export const createUserController = async (req, res) => {
   const errors = validationResult(req);
 
@@ -19,7 +17,7 @@ export const createUserController = async (req, res) => {
       req.body.password
     );
 
-    const token = await UserAI.generateJWT(user);
+    const token = await user.generateJWT(user);
 
     res.cookie("token", token, { httpOnly: true });
 
@@ -47,22 +45,28 @@ export const loginUserController = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const isMatch = await UserAI.comparePassword(user.password, password);
+    const isMatch = await user.comparePassword(user.password, password);
 
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
-    const token = await UserAI.generateJWT();
+    const token = await user.generateJWT();
+
     delete user._doc.password;
     res.cookie("token", token, { httpOnly: true });
     res.status(200).json({ user, token });
+    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
 export const profileController = async (req, res) => {
-  res.status(200).json({ user: req.user });
+  //send req as json
+
+  res.status(200).json( {user : req.user});
+  
+  
 };
 
 export const logoutUserController = async (req, res) => {
@@ -81,6 +85,7 @@ export const logoutUserController = async (req, res) => {
 export const allUsersController = async (req, res) => {
   try {
     const loggedUser = await UserAI.findOne({ email: req.user.email });
+    
     const users = await userService.allUsers({ userId: loggedUser._id });
     res.status(200).json({ users });
   } catch (err) {

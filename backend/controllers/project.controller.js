@@ -17,7 +17,7 @@ export const createProjectController = async (req, res) => {
       userId: user_id,
     });
 
-    res.status(201).json({ project: newProject });
+    res.status(201).json({  newProject });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

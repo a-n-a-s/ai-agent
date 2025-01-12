@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.scroll-container {
+    background: white;
+    padding: 2em;
+    margin: auto;
+    max-width: 450px;
+    max-height: 350px;
+    overflow: hidden;
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+}

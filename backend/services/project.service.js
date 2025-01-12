@@ -6,6 +6,7 @@ export const createProject = async ({ name, userId }) => {
 
   try {
     const project = await ProjectModel.create({ name, users: [userId] });
+    return project;
   } catch (err) {
     throw new Error(err.message);
   }
@@ -26,11 +27,15 @@ export const addUsersToProject = async ({ projectId, users, userId }) => {
 
   if (!mongoose.Types.ObjectId.isValid(projectId))
     throw new Error("Invalid projectId");
+
+
+
   if (
     !Array.isArray(users) ||
-    users.some((userId) => mongoose.Types.ObjectId.isValid(userId))
+    users.some((userId) => !mongoose.Types.ObjectId.isValid(userId))
   )
     throw new Error("Invalid users in the array");
+  
 
   if (!mongoose.Types.ObjectId.isValid(userId))
     throw new Error("Invalid userId");
